@@ -58,6 +58,12 @@ public class EventTemplatesController {
         return eventTemplateService.createEventTemplate(eventTemplate);
     }
 
+    @PreAuthorize("@eventTemplateService.assertUserOwnsTemplate(#jwt.getClaim('uid').toString(), #templateId)")
+    @PostMapping("/create/{templateId}/field")
+    public Collection<Goal> createFieldForEventTemplate(@AuthenticationPrincipal Jwt jwt, @PathVariable String templateId, @RequestBody EventTemplateField eventTemplateField) {
+        return eventTemplateService.createFieldForEventTemplate(eventTemplateField, templateId, jwt.getClaim("uid").toString());
+    }
+
     @PreAuthorize("#eventTemplate.getUserUuid() == authentication.token.claims['uid']")
     @PatchMapping("/update")
     public Collection<Goal> updateEventTemplate(@RequestBody EventTemplate eventTemplate) {

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Log
 @Service
@@ -44,6 +45,16 @@ public class EventTemplateService {
     public Collection<Goal> createEventTemplate(EventTemplate eventTemplate) throws Exception {
         transactionHandlerService.runInTransaction(() -> createEventTemplateTransactional(eventTemplate));
         return goalServiceClient.getAllGoals(eventTemplate.getUserUuid());
+    }
+
+    public Collection<Goal> createFieldForEventTemplate(EventTemplateField eventTemplateField, String templateId,  String userUuid) {
+        eventTemplateField.setId(objectIdGenerator.generate().toString());
+        EventTemplate eventTemplate = getTemplateById(templateId);
+        List<EventTemplateField> fields = eventTemplate.getFields().stream().collect(Collectors.toList());
+        fields.add(eventTemplateField);
+        eventTemplate.setFields(fields);
+        eventTemplateRepo.save(eventTemplate);
+        return goalServiceClient.getAllGoals(userUuid);
     }
 
     public Collection<Goal> updateEventTemplate(EventTemplate eventTemplate) {
