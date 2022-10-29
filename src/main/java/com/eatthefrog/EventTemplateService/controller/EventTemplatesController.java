@@ -1,6 +1,7 @@
 package com.eatthefrog.EventTemplateService.controller;
 
 import com.eatthefrog.EventTemplateService.model.eventtemplate.EventTemplate;
+import com.eatthefrog.EventTemplateService.model.eventtemplate.field.EventTemplateField;
 import com.eatthefrog.EventTemplateService.model.goal.Goal;
 import com.eatthefrog.EventTemplateService.service.EventTemplateService;
 import lombok.RequiredArgsConstructor;
@@ -64,8 +65,20 @@ public class EventTemplatesController {
     }
 
     @PreAuthorize("@eventTemplateService.assertUserOwnsTemplate(#jwt.getClaim('uid').toString(), #templateId)")
+    @PatchMapping("/update/{templateId}/field")
+    public Collection<Goal> updateFieldForEventTemplate(@AuthenticationPrincipal Jwt jwt, @PathVariable String templateId, @RequestBody EventTemplateField eventTemplateField) {
+        return eventTemplateService.updateFieldForEventTemplate(eventTemplateField, templateId, jwt.getClaim("uid").toString());
+    }
+
+    @PreAuthorize("@eventTemplateService.assertUserOwnsTemplate(#jwt.getClaim('uid').toString(), #templateId)")
     @DeleteMapping("/delete/{templateId}")
     public Collection<Goal> deleteEventTemplate(@AuthenticationPrincipal Jwt jwt, @PathVariable String templateId) throws Exception {
         return eventTemplateService.deleteEventTemplate(templateId, jwt.getClaim("uid").toString());
+    }
+
+    @PreAuthorize("@eventTemplateService.assertUserOwnsTemplate(#jwt.getClaim('uid').toString(), #templateId)")
+    @DeleteMapping("/delete/{templateId}/field/{fieldId}")
+    public Collection<Goal> deleteFieldFromEventTemplate(@AuthenticationPrincipal Jwt jwt, @PathVariable String templateId, @PathVariable String fieldId) throws Exception {
+        return eventTemplateService.deleteFieldFromEventTemplate(templateId, fieldId, jwt.getClaim("uid").toString());
     }
 }

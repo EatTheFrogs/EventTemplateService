@@ -1,11 +1,17 @@
-package com.eatthefrog.EventTemplateService.model.event;
+package com.eatthefrog.EventTemplateService.model.event.field;
 
 import com.eatthefrog.EventTemplateService.model.BaseModel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.TypeAlias;
 
 import java.io.Serial;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@TypeAlias("event.field.lift.set")
 public class LiftSet extends BaseModel {
 
     @Serial
